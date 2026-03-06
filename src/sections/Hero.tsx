@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,6 +14,16 @@ const Hero = () => {
         const parallaxValue = scrollY * 0.5;
         heroRef.current.style.transform = `translateY(${parallaxValue}px)`;
         contentRef.current.style.opacity = `${1 - scrollY / 800}`;
+
+        // Pause video when scrolled out of view for performance
+        if (videoRef.current) {
+          const videoBottom = heroRef.current.getBoundingClientRect().bottom;
+          if (videoBottom < 0) {
+            videoRef.current.pause();
+          } else {
+            videoRef.current.play();
+          }
+        }
       }
     };
 
@@ -29,12 +40,13 @@ const Hero = () => {
         style={{ willChange: 'transform' }}
       >
         <video
-          src="/video/mstarcity.mp4"
+          ref={videoRef}
+          src="/video/mindustr.mp4"
           autoPlay
           loop
           muted
           playsInline
-          className="w-full h-full object-cover scale-110"
+          className="w-full h-full object-cover scale-110 opacity-70"
         />
         {/* Gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-mostar-dark-900/60 via-mostar-dark-700/20 to-mostar-dark-900/80" />

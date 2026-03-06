@@ -22,7 +22,7 @@ const Navigation = ({ scrollY }: NavigationProps) => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? 'bg-mostar-dark-900/90 backdrop-blur-md border-b border-white/10'
+          ? 'bg-mostar-dark-900/90 border-b border-white/10'
           : 'bg-transparent'
       }`}
     >
@@ -31,11 +31,11 @@ const Navigation = ({ scrollY }: NavigationProps) => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="relative">
-              <div className="w-10 h-10 border-2 border-mostar-yellow-500 rounded-sm rotate-45 flex items-center justify-center group-hover:border-mostar-gold-400 transition-colors">
-                <span className="font-cinzel-decorative text-lg text-mostar-yellow-400 -rotate-45 group-hover:text-mostar-gold-400 transition-colors">
-                  M
-                </span>
-              </div>
+              <img 
+                src="/images/mstar.png" 
+                alt="Mostar Industries" 
+                className="w-20 h-20 object-contain rounded-sm group-hover:scale-105 transition-transform"
+              />
             </div>
             <span className="font-cinzel text-xl font-semibold tracking-wider text-white group-hover:text-mostar-yellow-300 transition-colors">
               Mostar
@@ -77,7 +77,7 @@ const Navigation = ({ scrollY }: NavigationProps) => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden absolute top-full left-0 right-0 bg-mostar-dark-900/95 backdrop-blur-md border-b border-white/10 transition-all duration-300 ${
+        className={`md:hidden absolute top-full left-0 right-0 bg-mostar-dark-900/90 border-b border-white/10 transition-all duration-300 ${
           isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}
       >

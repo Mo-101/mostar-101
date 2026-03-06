@@ -14,7 +14,9 @@ import { agents } from '../data/agents';
 
 const MostarAI = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [terminalLines, setTerminalLines] = useState<string[]>([
     '> Initializing MoStar Grid...',
     '> Loading FlameCODEX...',
@@ -27,9 +29,12 @@ const MostarAI = () => {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+          videoRef.current?.play();
+        } else {
+          videoRef.current?.pause();
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.1 }
     );
 
     if (sectionRef.current) {
@@ -37,6 +42,21 @@ const MostarAI = () => {
     }
 
     return () => observer.disconnect();
+  }, []);
+
+  // Scroll sync for video parallax
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const progress = Math.max(0, Math.min(1, 1 - (rect.top + rect.height) / (windowHeight + rect.height)));
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Terminal typing effect
@@ -91,16 +111,32 @@ const MostarAI = () => {
   return (
     <section
       ref={sectionRef}
-      className="section-padding bg-mostar-dark-800 relative overflow-hidden"
+      className="section-padding bg-mostar-dark-800 relative overflow-hidden min-h-screen"
     >
-      {/* Background Image Overlay */}
+      {/* Video Background with Parallax */}
       <div
-        className="absolute inset-0 z-0 opacity-10 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: `url('/images/c2.png')` }}
-      />
+        className="absolute inset-0 z-0 overflow-hidden"
+        style={{
+          transform: `translateY(${scrollProgress * 50}px) scale(1.1)`,
+          willChange: 'transform'
+        }}
+      >
+        <video
+          ref={videoRef}
+          src="/video/mindus.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover opacity-70"
+        />
+      </div>
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-mostar-dark-900/70 via-mostar-dark-800/50 to-mostar-dark-900/80" />
 
       {/* Background grid */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
+      <div className="absolute inset-0 pointer-events-none opacity-5 z-[2]">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="ai-grid" width="40" height="40" patternUnits="userSpaceOnUse">

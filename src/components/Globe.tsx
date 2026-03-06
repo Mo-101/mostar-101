@@ -20,11 +20,6 @@ const Globe: React.FC = () => {
       drawGlobe();
     };
     
-    // Globe parameters
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = Math.min(canvas.width, canvas.height) * 0.4;
-    
     // Draw the globe
     const drawGlobe = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);

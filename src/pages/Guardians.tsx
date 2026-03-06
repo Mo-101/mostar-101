@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Heart, BookOpen, Scale, Flame, ChevronRight } from 'lucide-react';
 import { guardians } from '../data/guardians';
@@ -16,6 +16,17 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 const Guardians = () => {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+
+  // Generate particle positions once using useMemo to avoid impure render
+  const particles = useMemo(() => {
+    return [...Array(20)].map((_, i) => ({
+      id: i,
+      left: `${(i * 5 + 2) % 100}%`,
+      top: `${(i * 7 + 3) % 100}%`,
+      delay: `${(i % 6)}s`,
+      duration: `${4 + (i % 4)}s`,
+    }));
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,15 +54,15 @@ const Guardians = () => {
 
         {/* Animated particles */}
         <div className="absolute inset-0 z-10 overflow-hidden pointer-events-none">
-          {[...Array(20)].map((_, i) => (
+          {particles.map((particle) => (
             <div
-              key={i}
+              key={particle.id}
               className="absolute w-1 h-1 bg-mostar-yellow-400/40 rounded-full animate-float"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 6}s`,
-                animationDuration: `${4 + Math.random() * 4}s`,
+                left: particle.left,
+                top: particle.top,
+                animationDelay: particle.delay,
+                animationDuration: particle.duration,
               }}
             />
           ))}
@@ -120,13 +131,16 @@ const Guardians = () => {
 
                   {/* Image */}
                   <div className="relative h-80 overflow-hidden">
-                    <div className={`absolute inset-0 bg-gradient-to-t ${guardian.gradient} opacity-20`} />
+                    <div className={`absolute inset-0 bg-gradient-to-t ${guardian.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
                     <img
                       src={guardian.image}
                       alt={guardian.name}
-                      className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover object-top transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-mostar-dark-900 via-mostar-dark-900/20 to-transparent" />
+                    
+                    {/* Hover glow overlay */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-mostar-yellow-500/20 via-transparent to-transparent" />
                   </div>
 
                   {/* Content */}

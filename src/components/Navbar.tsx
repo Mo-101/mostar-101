@@ -30,16 +30,6 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleMostarAIClick = () => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-    toast("Accessing MoStar AI Hub...", {
-      icon: <Zap className="h-5 w-5 text-mostar-cyan" />,
-    });
-  };
-
   const handleSignOut = async () => {
     await signOut();
     toast.success('Signed out successfully');
@@ -54,11 +44,13 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-mostar-blue to-mostar-cyan flex items-center justify-center">
-            <span className="font-display font-bold text-lg text-white">M</span>
-          </div>
+          <img 
+            src="/images/mstar.png" 
+            alt="Mostar Industries" 
+            className="w-20 h-20 object-contain rounded-full"
+          />
           <span className="font-display font-bold text-xl text-white">
-            MOSTAR <span className="text-mostar-light-blue">INDUSTRIES</span>
+            MOSTAR <span className="text-mostar-yellow">INDUSTRIES</span>
           </span>
         </Link>
 
@@ -76,7 +68,15 @@ const Navbar = () => {
           <a href="/#vision" className="nav-link font-display text-sm tracking-wide text-white/80 hover:text-mostar-light-blue transition-colors">
             Vision
           </a>
-          <Link to="/hub" className="nav-link font-display text-sm tracking-wide text-white/80 hover:text-mostar-light-blue transition-colors">
+          <Link 
+            to="/hub" 
+            className="nav-link font-display text-sm tracking-wide text-white/80 hover:text-mostar-light-blue transition-colors"
+            onClick={() => {
+              toast("Accessing MoStar AI Hub...", {
+                icon: <Zap className="h-5 w-5 text-mostar-cyan" />,
+              });
+            }}
+          >
             AI Hub
           </Link>
           

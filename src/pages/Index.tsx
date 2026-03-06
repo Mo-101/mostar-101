@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import HeroSection from '../components/HeroSection';
 import TechnologyCard from '../components/TechnologyCard';
@@ -14,7 +14,7 @@ import ProofBanner from '../components/ProofBanner';
 import PipelineSection from '../components/PipelineSection';
 import { NewsCarousel } from '../components/NewsCarousel';
 import { AnimatedSection, StaggerContainer, StaggerItem } from '../components/AnimatedSection';
-import { Shield, Globe, Database, Brain, Activity, BookOpen, Flame, Cpu, Satellite, Package, Cloud, Link, BarChart3, Sparkles } from 'lucide-react';
+import { Globe, Database, Brain, Activity, BookOpen, Flame, Satellite, Package, Cloud, Link, BarChart3, Sparkles } from 'lucide-react';
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);

@@ -12,17 +12,22 @@ import {
 
 const CoreDrivers = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [activeDriver, setActiveDriver] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+          videoRef.current?.play();
+        } else {
+          videoRef.current?.pause();
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.1 }
     );
 
     if (sectionRef.current) {
@@ -30,6 +35,21 @@ const CoreDrivers = () => {
     }
 
     return () => observer.disconnect();
+  }, []);
+
+  // Scroll sync for video parallax
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const progress = Math.max(0, Math.min(1, 1 - (rect.top + rect.height) / (windowHeight + rect.height)));
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const drivers = [
@@ -143,17 +163,33 @@ const CoreDrivers = () => {
   return (
     <section
       ref={sectionRef}
-      className="section-padding bg-gradient-mystic relative overflow-hidden"
+      className="section-padding bg-gradient-mystic relative overflow-hidden min-h-screen"
     >
-      {/* Background Image Overlay */}
+      {/* Video Background with Parallax */}
       <div
-        className="absolute inset-0 z-0 opacity-10 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: `url('/images/c5.png')` }}
-      />
+        className="absolute inset-0 z-0 overflow-hidden"
+        style={{
+          transform: `translateY(${scrollProgress * 50}px) scale(1.1)`,
+          willChange: 'transform'
+        }}
+      >
+        <video
+          ref={videoRef}
+          src="/video/grid.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover opacity-70"
+        />
+      </div>
 
-      {/* Background effects */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-mostar-yellow-500/30 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-mostar-yellow-500/30 to-transparent" />
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-mostar-dark-900/70 via-mostar-dark-800/50 to-mostar-dark-900/80" />
+
+      {/* Top/Bottom lines */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-mostar-yellow-500/30 to-transparent z-[2]" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-mostar-yellow-500/30 to-transparent z-[2]" />
 
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-mostar-yellow-600/5 rounded-full blur-[100px]" />
       <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-mostar-gold-400/5 rounded-full blur-[80px]" />
