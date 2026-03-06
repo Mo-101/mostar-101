@@ -29,7 +29,7 @@ const Hero = () => {
         style={{ willChange: 'transform' }}
       >
         <video
-          src="/images/grid.mp4"
+          src="/video/mstarcity.mp4"
           autoPlay
           loop
           muted
